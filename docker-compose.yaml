@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  nut_server:
+    image: ghcr.io/vdovhanych/nut-docker:latest
+    restart: always
+    network_mode: host
+    devices:
+      - /dev/bus/usb/001/003
+    environment:
+      - API_USER=upsmon
+      - API_PASSWORD=secret
+      - NAME=ups
+      - DRIVER=usbhid-ups
+      - PORT=auto
+      - DESCRIPTION=UPS
+      - SERIAL=
+      - VENDORID=
+      - SDORDER=
+      - SERVER=master
+      - POLLINTERVAL=1
+      - MAXRETRY=3
+      - GROUP=nut
+      - USER=nut
+    container_name: nut-server
+    hostname: nut-server
+
+  nut_webui:
+    image: gpdm/nut-webui:latest
+    restart: always
+    ports:
+      - 6495:80
+    volumes:
+      - /volume1/docker/nut-server:/etc/nut
+    container_name: nut-webui
+    hostname: nut-webui
